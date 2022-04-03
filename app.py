@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, url_for
+from passlib.hash import pbkdf2_sha256
 from wtform_fields import *
 from models import *
 
@@ -17,8 +18,10 @@ def index():
     if user_reg_form.validate_on_submit(): # trigger validators to check form request and if input parameters are valid
         current_username = user_reg_form.username.data
         current_password = user_reg_form.password.data
+
+        hash_password = pbkdf2_sha256.hash(current_password)
         
-        current_user = User(username = current_username, password = current_password)
+        current_user = User(username = current_username, password = hash_password)
         db.session.add(current_user)
         db.session.commit()
         return redirect(url_for('login'))
