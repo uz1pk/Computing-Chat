@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from wtform_fields import *
 
 # Configurations
-app = Flask(__name__) #flask configurations
+app = Flask(__name__)
 app.secret_key = 'MUST REPLACE' 
 
 @app.route("/", methods=['GET', 'POST']) # Default route
