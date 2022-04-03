@@ -37,7 +37,7 @@ class RegistrationForm(FlaskForm): # Registration form
 
 
 # Login form
-class UserLoginForm(FlaskForm): # Login form
+class UserLoginForm(FlaskForm):
     username = StringField('username_label', validators=[InputRequired(message="Must Enter Username")])
     password = PasswordField('password_label', validators=[InputRequired(message="Must Enter Password"), valid_user_data])
     submit_button = SubmitField('Login')
