@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from wtform_fields import *
 from models import *
 
@@ -12,19 +12,28 @@ db = SQLAlchemy(app)
 
 @app.route("/", methods=['GET', 'POST']) # Default route
 def index():
-
-    user_reg_form = RegistrationForm() #instanciate class for form imported from our wtform_field.py
+    user_reg_form = RegistrationForm() # instanciate class for form imported from our wtform_field.py
     
-    if user_reg_form.validate_on_submit(): #trigger validators to check form request and if input parameters are valid
+    if user_reg_form.validate_on_submit(): # trigger validators to check form request and if input parameters are valid
         current_username = user_reg_form.username.data
         current_password = user_reg_form.password.data
         
         current_user = User(username = current_username, password = current_password)
         db.session.add(current_user)
         db.session.commit()
-        return "Successfully Created!"
+        return redirect(url_for('login'))
 
-    return render_template("index.html", form=user_reg_form) #render the page
+    return render_template("index.html", form = user_reg_form) # render the page
 
-if __name__ == "__main__": #host server on local IP
+# Route for login page
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    user_login_form = UserLoginForm()
+    
+    if user_login_form.validate_on_submit():
+        return "Successful Login"
+
+    return render_template("login.html", form = user_login_form)
+
+if __name__ == "__main__": # host server on local IP
     app.run(debug = True)

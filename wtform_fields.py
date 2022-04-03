@@ -3,11 +3,29 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from models import User
 
-class RegistrationForm(FlaskForm):
-    """ Registration form """
+# Function to validate user crendentials when logging in
+def valid_user_data(form, field):
+    current_username = form.username.data
+    current_password = field.data
 
+    current_user = User.query.filter_by(username = current_username).first()
+    if current_user is None:
+        raise ValidationError("Login credentials are not correct")
+    elif current_password != current_user.password:
+        raise ValidationError("Login credentials are not correct")
+
+# Function to see if the account already exists
+def validate_registration(form, field): 
+    current_username = field.data
+
+    current_user = User.query.filter_by(username = current_username).first()
+    if current_user:
+        raise ValidationError("Username already exists")
+
+# Registration form
+class RegistrationForm(FlaskForm): # Registration form
     username = StringField('username_label',
-    validators=[InputRequired(message="Must Enter Username"), Length(min=4, max=25, message="Username must be greater than 4 characters")])
+    validators=[InputRequired(message="Must Enter Username"), Length(min=4, max=25, message="Username must be greater than 4 characters"), validate_registration])
 
     password = PasswordField('password_label', 
     validators=[InputRequired(message="Must Enter Password"), Length(min=5, message="Password must be greater than 4 characters")])
@@ -17,7 +35,10 @@ class RegistrationForm(FlaskForm):
 
     submit_button = SubmitField('Create')
 
-    def validate_username(self, current_username):
-        current_user = User.query.filter_by(username = current_username.data).first()
-        if current_user:
-            raise ValidationError("Username already exists")
+
+# Login form
+class UserLoginForm(FlaskForm): # Login form
+    username = StringField('username_label', validators=[InputRequired(message="Must Enter Username")])
+    password = PasswordField('password_label', validators=[InputRequired(message="Must Enter Password"), valid_user_data])
+    submit_button = SubmitField('Login')
+
