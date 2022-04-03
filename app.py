@@ -18,10 +18,6 @@ def index():
     if user_reg_form.validate_on_submit(): #trigger validators to check form request and if input parameters are valid
         current_username = user_reg_form.username.data
         current_password = user_reg_form.password.data
-
-        user_profile = User.query.filter_by(username = current_username).first()
-        if user_profile:
-            return "Username exists"
         
         current_user = User(username = current_username, password = current_password)
         db.session.add(current_user)
