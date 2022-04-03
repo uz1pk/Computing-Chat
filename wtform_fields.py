@@ -9,7 +9,7 @@ class RegistrationForm(FlaskForm):
      validators=[InputRequired(message="Must Enter Username"), Length(min=4, max=25, message="Username must be greater than 4 characters")])
 
     password = PasswordField('password_label', 
-    validators=[InputRequired(message="Must Enter Password"), Length(min=4, max=25, message="Password must be greater than 4 characters")])
+    validators=[InputRequired(message="Must Enter Password"), Length(min=5, message="Password must be greater than 4 characters")])
 
     confirm_password = PasswordField('confirm_password_label', 
     validators=[InputRequired(message="Must Enter Username"), EqualTo('password', message="Passwords must match")]) #all validators for each field
