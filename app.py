@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from passlib.hash import pbkdf2_sha256
 from wtform_fields import *
@@ -17,21 +17,25 @@ login.init_app(app)
 
 @login.user_loader  
 def load_user(id):
+    
     return User.query.get(int(id))
 
 @app.route("/", methods=['GET', 'POST']) # Default route
 def index():
+
     user_reg_form = RegistrationForm() # instanciate class for form imported from our wtform_field.py
     
     if user_reg_form.validate_on_submit(): # trigger validators to check form request and if input parameters are valid
         current_username = user_reg_form.username.data
         current_password = user_reg_form.password.data
 
-        hash_password = pbkdf2_sha256.hash(current_password)
+        hash_password = pbkdf2_sha256.hash(current_password) # hash password before adding to DB
         
         cur_user = User(username = current_username, password = hash_password)
         db.session.add(cur_user)
         db.session.commit()
+
+        flash('Registered Successfully', 'success')
         return redirect(url_for('login'))
 
     return render_template("index.html", form = user_reg_form) # render the page
@@ -41,6 +45,7 @@ def index():
 # Route for login page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+
     user_login_form = UserLoginForm()
     
     if user_login_form.validate_on_submit():
@@ -54,8 +59,10 @@ def login():
 
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
+
     if not current_user.is_authenticated:
-        return "Must login before using chat"
+        flash('Must be logged in before accessing chat', 'danger')
+        return redirect(url_for('login'))
 
     return "Welcome to chat"
 
@@ -63,8 +70,11 @@ def chat():
 
 @app.route("/logout", methods=['GET'])
 def logout():
+
     logout_user()
-    return "Successfully Logged Out"
+
+    flash('Logout successful', 'success')
+    return redirect(url_for('login'))
 
 
 

@@ -6,6 +6,7 @@ from models import User
 
 # Function to validate user crendentials when logging in
 def valid_user_data(form, field):
+
     current_username = form.username.data
     current_password = field.data
 
@@ -17,6 +18,7 @@ def valid_user_data(form, field):
 
 # Function to see if the account already exists
 def validate_registration(form, field): 
+
     current_username = field.data
 
     current_user = User.query.filter_by(username = current_username).first()
@@ -25,6 +27,7 @@ def validate_registration(form, field):
 
 # Registration form
 class RegistrationForm(FlaskForm):
+
     username = StringField('username_label',
     validators=[InputRequired(message="Must Enter Username"), Length(min=4, max=25, message="Username must be greater than 4 characters"), validate_registration])
 
@@ -39,6 +42,7 @@ class RegistrationForm(FlaskForm):
 
 # Login form
 class UserLoginForm(FlaskForm):
+    
     username = StringField('username_label', validators=[InputRequired(message="Must Enter Username")])
     password = PasswordField('password_label', validators=[InputRequired(message="Must Enter Password"), valid_user_data])
     submit_button = SubmitField('Login')
