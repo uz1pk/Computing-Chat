@@ -23,11 +23,24 @@ login.init_app(app)
 
 @login.user_loader  
 def load_user(id):
-    
     return User.query.get(int(id))
 
-@app.route("/", methods=['GET', 'POST']) # Default route
+# Route for login page
+@app.route("/", methods=['GET', 'POST'])
 def index():
+
+    user_login_form = UserLoginForm()
+    
+    if user_login_form.validate_on_submit():
+        cur_user = User.query.filter_by(username = user_login_form.username.data).first()
+        login_user(cur_user)
+        return redirect(url_for('chat'))
+
+    return render_template("login.html", form = user_login_form)
+
+
+@app.route("/register", methods=['GET', 'POST']) # Default route
+def register():
 
     user_reg_form = RegistrationForm() # instanciate class for form imported from our wtform_field.py
     
@@ -47,25 +60,8 @@ def index():
     return render_template("index.html", form = user_reg_form) # render the page
 
 
-
-# Route for login page
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-
-    user_login_form = UserLoginForm()
-    
-    if user_login_form.validate_on_submit():
-        cur_user = User.query.filter_by(username = user_login_form.username.data).first()
-        login_user(cur_user)
-        return redirect(url_for('chat'))
-
-    return render_template("login.html", form = user_login_form)
-
-
-
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
-
     # ENABLE LATER  
     #if not current_user.is_authenticated:
     #    flash('Must be logged in before accessing chat', 'danger')
@@ -77,34 +73,39 @@ def chat():
 
 @app.route("/logout", methods=['GET'])
 def logout():
-
     logout_user()
 
     flash('Logout successful', 'success')
     return redirect(url_for('login'))
 
 
-@socketio.on('message')
-def message(data):
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
-    send({'currMessage': data['currMessage'], 'currUsername': data['currUsername'], 'time': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+@socketio.on('incoming-message')
+def on_message(data):
+
+    message = data["message"]
+    username = data["username"]
+    time = strftime('%b-%d %I:%M%p', localtime())
+
+    send({"username": username, "message": message, "time": time}, room=data["room"])
 
 
 @socketio.on('join')
 def join(data):
 
     join_room(data['room'])
-    send({'currMessage': data['currUsername'] + " has joined " + data['room']}, room=data['room'])
+    send({'message': data['username'] + " has joined " + data['room']}, room=data['room'])
 
 
 @socketio.on('leave')
 def leave(data):
 
     leave_room(data['room'])
-    send({'currMessage': data['currUsername'] + " has left the room"}, room=data['room'])
+    send({'message': data['username'] + " has left the room"}, room=data['room'])
 
 
-
-# host server on local IP
 if __name__ == "__main__":
     socketio.run(app, debug = True)

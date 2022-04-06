@@ -3,55 +3,90 @@
     <head>
         <meta charset="utf-8">
         <title>
-
+            Computing Chat - {{ username }}
         </title>
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='fav.png') }}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/chat.css') }}">
     </head>
 
     <body>
-        <!-- NAVIGATION BAR -->
-        <nav>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <p class=formError>{{ messages[0] }}</p>
+            {% endif %}
+        {% endwith %}
 
-        </nav>
+        <div class="wrapper">
+            <!-- NAVIGATION BAR -->
+            <nav class="navbar navbar-expand-sm navbar-light fixed-top" style="background-color: #66a1ee">
+                <div class="container-fluid">
+                    <div id="show-sidebar-button" class="cursor-pointer">
+                        <i class="fas fa-plus-circle "></i>
+                        <span>Rooms</span>
+                    </div>
 
-
-        <div class="main-section">
-
-            <!-- SELECT ROOMS -->
-            <nav id="sidebar">
-                <h4>
-                    Rooms
-                </h4>
-
-                {% for room in rooms %} 
-                    <p class="select-room">{{ room|title }}</p>
-                {% endfor %}
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a id="logout-btn" class="nav-link" href="{{ url_for('logout') }}"><span style="color: #335177">Logout</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </nav>
 
-            <!-- MAIN MESSAGE AREA -->
-            <div id="rightside-panel">
 
-                <!-- DISPLAY MESSAGE -->
-                <div id="display-message-section">
-                    
-                </div>
+            <div class="main-section">
 
-                <!-- SEND MESSAGE -->
-                <div class="input-area">
-                    <input type="text" id="user-message" placeholder="Type" autocomplete="off">
-                    <button type="button" id="send-message">SEND</button> 
+                <!-- SELECT ROOMS -->
+                <nav id="sidebar">
+                    <h4>
+                        Rooms
+                    </h4>
+
+                    {% for room in rooms %} 
+                        <p class="select-room">{{ room|title }}</p>
+                    {% endfor %}
+                </nav>
+
+                <!-- MAIN MESSAGE AREA -->
+                <div id="rightside-panel">
+
+                    <!-- DISPLAY MESSAGE -->
+                    <div id="display-message-section">
+                        
+                    </div>
+
+                    <!-- SEND MESSAGE -->
+                    <div class="input-area" class="input-group mb-3">
+                        <input type="text" id="user-message" class="form-control" placeholder="Type here..." aria-label="Type a message" aria-describedby="basic-addon2" autocomplete="off">
+                        <div class="input-group-append">
+                            <button id="send-message" class="btn btn-warning" type="button">SEND<i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <script type="text/javascript">
-            const username = `{{ username|e }}`;
-        </script>
+        <span id="get-username">{{ username }}</span>
 
         <script src="{{ url_for('static', filename='scripts/chat.js') }}"></script>
 
         <!-- FLASK/JS SOCKETIO SCRIPT -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
         <script src="{{ url_for('static', filename='scripts/socketio.js') }}"></script>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
     </body>
 </html>

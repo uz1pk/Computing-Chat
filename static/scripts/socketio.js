@@ -1,49 +1,88 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initializing SocketIO
     var socket = io();
+
+    const username = document.querySelector('#get-username').innerHTML;
 
     let room = "courses";
     joinRoom(room);
 
     function leaveRoom(room) {
-        socket.emit('leave', {'currUsername': username, 'room': room});
+        socket.emit('leave', {'username': username, 'room': room});
+
+        document.querySelectorAll('.select-room').forEach(p => {
+            p.style.color = "black";
+        });
     }
 
     function joinRoom(room) {
-        socket.emit('join', {'currUsername': username, 'room': room});
+        socket.emit('join', {'username': username, 'room': room});
+
         document.querySelector('#display-message-section').innerHTML = '';
+        document.querySelector('#user-message').focus();
     }
 
-    function printMessage(msg) {
+    function printMessage(message) {
         const paragraph = document.createElement('p');
-        paragraph.innerHTML = msg;
+        paragraph.setAttribute("class", "system-message");
+        paragraph.innerHTML = message;
         document.querySelector('#display-message-section').append(paragraph);
+        scrollDownChatWindow();
+
+        document.querySelector("#user-message").focus();
+    }
+
+    function scrollDownChatWindow() {
+        const chatWindow = document.querySelector("#display-message-section");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // Sending messages
+    document.querySelector('#send-message').onclick = () => {
+        socket.emit('incoming-message', {'message': document.querySelector('#user-message').value, 'username': username, 'room': room });
+        document.querySelector('#user-message').value = '';
     }
 
     // Display user message
     socket.on('message', data => {
-        const userParagraph = document.createElement('p');
-        const usernameSpan = document.createElement('span');
-        const currTime = document.createElement('span');
-        const br = document.createElement('br');
+        if(data.message) {
+            const userParagraph = document.createElement('p');
+            const usernameSpan = document.createElement('span');
+            const currTime = document.createElement('span');
+            const br = document.createElement('br');
 
-        if (data.currUsername) {
-            usernameSpan.innerHTML = data.currUsername;
-            currTime.innerHTML = data.time;
-            userParagraph.innerHTML = usernameSpan.outerHTML + br.outerHTML + data.currMessage + br.outerHTML + currTime.outerHTML + br.outerHTML;
-        }
-        else {
-            printMessage(data.currMessage);
+            if (data.username == username) {
+                userParagraph.setAttribute("class", "my-message");
+
+                usernameSpan.setAttribute("class", "my-username");
+                usernameSpan.innerHTML = data.username;
+
+                currTime.setAttribute("class", "timestamp");
+                currTime.innerHTML = data.time;
+
+                userParagraph.innerHTML = usernameSpan.outerHTML + br.outerHTML + data.message + br.outerHTML + currTime.outerHTML + br.outerHTML;
+            
+                document.querySelector('#display-message-section').append(userParagraph);
+            }
+            else if (typeof data.username !== 'undefined') {
+                userParagraph.setAttribute("class", "other-message");
+
+                usernameSpan.setAttribute("class", "other-username");
+                usernameSpan.innerHTML = data.username;
+
+                currTime.setAttribute("class", "timestamp");
+                currTime.innerHTML = data.time;
+
+                userParagraph.innerHTML = usernameSpan.outerHTML + br.outerHTML + data.message + br.outerHTML + currTime.outerHTML + br.outerHTML;
+            
+                document.querySelector('#display-message-section').append(userParagraph);
+            }
+            else {
+                printMessage(data.message);
+            }
         }
 
-        document.querySelector('#display-message-section').append(userParagraph);
+        //scrollChat();
     });
-
-    // Sending messages
-    document.querySelector('#send-message').onclick = () => {
-        socket.send({'currMessage': document.querySelector('#user-message').value, 'currUsername': username, 'room': room });
-        document.querySelector('#user-message').value = '';
-    }
 
     // Selecting a room
     document.querySelectorAll('.select-room').forEach(p => {
@@ -60,4 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    document.querySelector("#logout-btn").onclick = () => {
+        leaveRoom(room);
+    };
+
 })
