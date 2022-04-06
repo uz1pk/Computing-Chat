@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>
+
+        </title>
+    </head>
+
+    <body>
+        <!-- NAVIGATION BAR -->
+        <nav>
+
+        </nav>
+
+
+        <div class="main-section">
+
+            <!-- SELECT ROOMS -->
+            <nav id="sidebar">
+                <h4>
+                    Rooms
+                </h4>
+
+                {% for room in rooms %} 
+                    <p class="select-room">{{ room|title }}</p>
+                {% endfor %}
+            </nav>
+
+            <!-- MAIN MESSAGE AREA -->
+            <div id="rightside-panel">
+
+                <!-- DISPLAY MESSAGE -->
+                <div id="display-message-section">
+                    
+                </div>
+
+                <!-- SEND MESSAGE -->
+                <div class="input-area">
+                    <input type="text" id="user-message" placeholder="Type" autocomplete="off">
+                    <button type="button" id="send-message">SEND</button> 
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            const username = `{{ username|e }}`;
+        </script>
+
+        <script src="{{ url_for('static', filename='scripts/chat.js') }}"></script>
+
+        <!-- FLASK/JS SOCKETIO SCRIPT -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='scripts/socketio.js') }}"></script>
+
+    </body>
+</html>

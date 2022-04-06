@@ -1,5 +1,8 @@
+from socket import socket
+from time import localtime, strftime
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from passlib.hash import pbkdf2_sha256
 from wtform_fields import *
 from models import *
@@ -11,6 +14,9 @@ app.secret_key = 'MUST REPLACE'  #REPLACE SECRET KEY
 # Database setup (REQWRITE KEY FOR PUBLICATION)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://qfdtdkunaroicj:c3d36f692efe24709974488ec30f5158d0b22cdf18eb470e854867cc2094f3bd@ec2-52-21-136-176.compute-1.amazonaws.com:5432/dcfco3jf2ii5bc'
 db = SQLAlchemy(app)
+
+socketio = SocketIO(app)
+CHATROOMS = ["courses", "coop", "resume", "stand-Up", "other"]
 
 login = LoginManager(app)
 login.init_app(app)
@@ -60,11 +66,12 @@ def login():
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
 
-    if not current_user.is_authenticated:
-        flash('Must be logged in before accessing chat', 'danger')
-        return redirect(url_for('login'))
+    # ENABLE LATER  
+    #if not current_user.is_authenticated:
+    #    flash('Must be logged in before accessing chat', 'danger')
+    #    return redirect(url_for('login'))
 
-    return "Welcome to chat"
+    return render_template('main.html', username=current_user.username, rooms=CHATROOMS)
 
 
 
@@ -77,7 +84,27 @@ def logout():
     return redirect(url_for('login'))
 
 
+@socketio.on('message')
+def message(data):
+
+    send({'currMessage': data['currMessage'], 'currUsername': data['currUsername'], 'time': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+
+
+@socketio.on('join')
+def join(data):
+
+    join_room(data['room'])
+    send({'currMessage': data['currUsername'] + " has joined " + data['room']}, room=data['room'])
+
+
+@socketio.on('leave')
+def leave(data):
+
+    leave_room(data['room'])
+    send({'currMessage': data['currUsername'] + " has left the room"}, room=data['room'])
+
+
 
 # host server on local IP
 if __name__ == "__main__":
-    app.run(debug = True)
+    socketio.run(app, debug = True)
