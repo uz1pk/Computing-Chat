@@ -54,18 +54,18 @@ def register():
         db.session.add(cur_user)
         db.session.commit()
 
-        flash('Registered Successfully', 'success')
-        return redirect(url_for('login'))
+        flash('Registered Successfully')
+        return redirect(url_for('index'))
 
     return render_template("index.html", form = user_reg_form) # render the page
 
 
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
-    # ENABLE LATER  
-    #if not current_user.is_authenticated:
-    #    flash('Must be logged in before accessing chat', 'danger')
-    #    return redirect(url_for('login'))
+
+    if not current_user.is_authenticated:
+        flash('Must be logged in before accessing chat')
+        return redirect(url_for('index'))
 
     return render_template('main.html', username=current_user.username, rooms=CHATROOMS)
 
@@ -75,8 +75,8 @@ def chat():
 def logout():
     logout_user()
 
-    flash('Logout successful', 'success')
-    return redirect(url_for('login'))
+    flash('Logout successful')
+    return redirect(url_for('index'))
 
 
 @app.errorhandler(404)

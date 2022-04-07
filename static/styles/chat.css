@@ -1,3 +1,8 @@
+body {
+    background-color: #EFFFFD;
+    font-family: Helvetica, sans-serif;
+}
+
 .wrapper {
     display: flex;
 }

@@ -12,29 +12,32 @@
     </head>
 
     <body>
-        <div class="main-section">
-            <div class="jumbotron">
-                <h1 class="display-4">Computing Chat</h1>
-                <p class="lead">Welcome</p>
+            <div class="main-section">
+                <div class="jumbotron" id="main-jumbo">
+                    <div id="test">
+                        <h1 class="display-4">Computing Chat</h1>
+                        <p class="lead">Welcome</p>
+                    </div>
+                </div>
+
+                <div class="center">
+                    <div id="righthand-side">
+                        {% with messages = get_flashed_messages(with_categories = true) %}
+                        
+                            {% if messages %}
+
+                                {{ messages[0][1] }}
+
+                            {% endif %}
+
+                        {% endwith %}
+
+                        {% block content %}
+
+                        {% endblock %}
+                    </div>
+                </div>
             </div>
-
-            <div id="righthand-side">
-                {% with messages = get_flashed_messages(with_categories = true) %}
-                
-                    {% if messages %}
-
-                        Category: {{ messages[0][0] }}
-                        {{ messages[0][1] }}
-
-                    {% endif %}
-
-                {% endwith %}
-
-                {% block content %}
-
-                {% endblock %}
-            </div>
-        </div>
     </body>
 
 </html>

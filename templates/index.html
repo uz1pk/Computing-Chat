@@ -2,22 +2,26 @@
 
 {% extends "pre-login.html" %}
 
-{% block title %}Registration {% endblock %}
+{% block title %} Registration {% endblock %}
 
 {% block content %} 
-    <h1>Get Started</h1>
+    <div id="center-padding">
+        <h1>Get Started</h1>
 
-    <form action="{{ url_for('register')}}", method="POST">
-        <div>
-            {{ displayField(form.username, "Username", autocomplete="off", autofocus=true) }}
-            {{ displayField(form.password, "Password") }}
-            {{ displayField(form.confirm_password, "Retype Password") }}
+        <div id="center-padding">
+            <form action="{{ url_for('register')}}", method="POST">
+                <div>
+                    {{ displayField(form.username, "Username", autocomplete="off", autofocus=true) }}
+                    {{ displayField(form.password, "Password") }}
+                    {{ displayField(form.confirm_password, "Retype Password") }}
+                </div>
+
+                <div>
+                    {{ form.submit_button(class="btn btn-info btn-block") }}
+                </div>
+
+                {{ form.csrf_token }}
+            </form>
         </div>
-
-        <div>
-            {{ form.submit_button }}
-        </div>
-
-        {{ form.csrf_token }}
-    </form>
+    </div>
 {% endblock %} 
