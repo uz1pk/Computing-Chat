@@ -33,6 +33,11 @@ h1 {
     padding-bottom: 1em;
 }
 
+.btn-info {
+    background-color: #42C2FF;
+    color: #000000;
+}
+
 #main-jumbo {
     background-color: #42C2FF;
 }

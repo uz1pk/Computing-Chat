@@ -85,6 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Selecting a room
+
+
+    /*
+
+
+    FIX FOR BUTTONS
+
+
+    
+    */
     document.querySelectorAll('.select-room').forEach(p => {
         p.onclick = () => {
             let selectedRoom = p.innerHTML;

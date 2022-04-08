@@ -63,9 +63,9 @@ def register():
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
 
-    if not current_user.is_authenticated:
-        flash('Must be logged in before accessing chat')
-        return redirect(url_for('index'))
+    #if not current_user.is_authenticated:
+    #    flash('Must be logged in before accessing chat')
+    #    return redirect(url_for('index'))
 
     return render_template('main.html', username=current_user.username, rooms=CHATROOMS)
 
