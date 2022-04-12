@@ -1,8 +1,10 @@
+from calendar import c
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from passlib.hash import pbkdf2_sha256
 from models import User
+from app import CHATROOMS
 
 # Function to validate user crendentials when logging in
 def valid_user_data(form, field):
@@ -24,6 +26,7 @@ def validate_registration(form, field):
     current_user = User.query.filter_by(username = current_username).first()
     if current_user:
         raise ValidationError("Username already exists")
+
 
 # Registration form
 class RegistrationForm(FlaskForm):
@@ -47,3 +50,10 @@ class UserLoginForm(FlaskForm):
     password = PasswordField('password_label', validators=[InputRequired(message="Must Enter Password"), valid_user_data])
     submit_button = SubmitField('Login')
 
+#Room add form
+class AddRoomForm(FlaskForm):
+
+    roomname = StringField('roomname_label',
+    validators=[InputRequired(message="Must Enter a roomname to submit"), Length(min=2, max=15, message="Roomname must be greater than 2 characters")])
+
+    submit_button = SubmitField('Add')

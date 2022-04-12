@@ -124,7 +124,6 @@ input[type=text]:focus{
     border-color: grey;
     border-width: 2px;
     border-style: solid;
-    background-color: #C2DBFB;
 
     animation-name: fadeIn;
     animation-duration: 0.75s;
@@ -138,7 +137,7 @@ input[type=text]:focus{
     margin-right: 1em;
     padding: 0.5em 0.5em 0.5em 1em;
     border-radius: 15px;
-    border-color: #42C2FF;
+    border-color: grey;
     border-width: 2px;
     border-style: solid;
 

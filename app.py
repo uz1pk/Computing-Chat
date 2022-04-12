@@ -16,7 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://qfdtdkunaroicj:c3d36f692ef
 db = SQLAlchemy(app)
 
 socketio = SocketIO(app)
-CHATROOMS = ["courses", "coop", "resume", "stand-Up", "other"]
+CHATROOMS = ["courses", "coop", "resume", "stand-up", "other"]
 
 login = LoginManager(app)
 login.init_app(app)
@@ -63,12 +63,18 @@ def register():
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
 
-    #if not current_user.is_authenticated:
-    #    flash('Must be logged in before accessing chat')
-    #    return redirect(url_for('index'))
+    if not current_user.is_authenticated:
+        flash('Must be logged in before accessing chat')
+        return redirect(url_for('index'))
 
-    return render_template('main.html', username=current_user.username, rooms=CHATROOMS)
+    user_room_add = AddRoomForm()
 
+    if user_room_add.validate_on_submit():
+        new_room = user_room_add.roomname.data
+        if new_room.lower() not in CHATROOMS:
+            CHATROOMS.append(new_room)
+
+    return render_template('main.html', username=current_user.username, form = user_room_add, rooms=CHATROOMS)
 
 
 @app.route("/logout", methods=['GET'])

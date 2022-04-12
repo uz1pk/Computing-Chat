@@ -1,3 +1,5 @@
+{% from 'form_macros.html' import displayField %}
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
@@ -42,8 +44,6 @@
             </nav>
 
 
-            <div class="main-section">
-
                 <!-- SELECT ROOMS -->
                 <nav id="sidebar">
                     <h4 id="rooms-sidebar-title">
@@ -55,7 +55,24 @@
                         <button class="select-room btn btn-info test-button">{{ room|title }}</button>
                         <br/>
                     {% endfor %}
+
+                    <br/>
+                    <h5>
+                        Create a room
+                    </h5>
+                    <form action="{{ url_for('chat')}}", method="POST" id="room-add-form">
+                        <div>
+                            {{ displayField(form.roomname, "Roomname", autocomplete="off") }}
+                        </div>
+                        <div>
+                            {{ form.submit_button(class="btn btn-info btn-block") }}
+                        </div>
+        
+                        {{ form.csrf_token }}
+                    </form>
                 </nav>
+
+            <div class="main-section">
 
                 <!-- MAIN MESSAGE AREA -->
                 <div id="rightside-panel">
