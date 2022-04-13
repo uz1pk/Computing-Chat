@@ -42,9 +42,9 @@ def index():
 @app.route("/register", methods=['GET', 'POST']) # Default route
 def register():
 
-    user_reg_form = RegistrationForm() # instanciate class for form imported from our wtform_field.py
+    user_reg_form = RegistrationForm()
     
-    if user_reg_form.validate_on_submit(): # trigger validators to check form request and if input parameters are valid
+    if user_reg_form.validate_on_submit():
         current_username = user_reg_form.username.data
         current_password = user_reg_form.password.data
 
@@ -52,12 +52,12 @@ def register():
         
         cur_user = User(username = current_username, password = hash_password)
         db.session.add(cur_user)
-        db.session.commit()
+        db.session.commit() # add the users data to the DB
 
         flash('Registered Successfully')
         return redirect(url_for('index'))
 
-    return render_template("index.html", form = user_reg_form) # render the page
+    return render_template("index.html", form = user_reg_form)
 
 
 @app.route("/chat", methods=['GET', 'POST'])
