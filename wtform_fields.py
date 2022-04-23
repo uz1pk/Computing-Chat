@@ -1,10 +1,8 @@
-from calendar import c
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from passlib.hash import pbkdf2_sha256
 from models import User
-from app import CHATROOMS
 
 # Function to validate user crendentials when logging in
 def valid_user_data(form, field):
