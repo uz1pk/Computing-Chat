@@ -5,7 +5,7 @@ This web application is powered by Flask to allow for easy and simple chatting a
 
 ## Motivation
 
-My main goal of this project was to get in depth familiarity with full stack web development from aspects like deployment, back end, customer security and more. Alongisde this I wanted to use this project as a way to learn more about Python and python development.
+My main goal of this project was to get in depth familiarity with full stack web development from aspects like deployment, back end, customer security and more. Alongisde this I wanted to use this project as a way to learn more about Python and python development. As a side note, while source code includes working functionality to add rooms. The final publication does not include it for to prevent inappropriate content
 
 ## Features
 
