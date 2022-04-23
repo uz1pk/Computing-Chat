@@ -12,8 +12,11 @@ from models import *
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET')
 
-# Database setup (REQWRITE KEY FOR PUBLICATION)
+# Database setup (REWRITE KEY FOR PUBLICATION)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+db.init_app(app)
+engine_container = db.get_engine(app)
+
 db = SQLAlchemy(app)
 
 socketio = SocketIO(app)
@@ -85,9 +88,17 @@ def logout():
     flash('Logout successful')
     return redirect(url_for('index'))
 
+
+def cleanup(session):
+
+    session.close()
+    engine_container.dispose()
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
 
 @socketio.on('incoming-message')
 def on_message(data):
