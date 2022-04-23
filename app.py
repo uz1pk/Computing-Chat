@@ -88,7 +88,7 @@ def logout():
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db.remove()
+    db.close()
 
 @app.errorhandler(404)
 def page_not_found(e):
