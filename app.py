@@ -85,11 +85,6 @@ def logout():
     flash('Logout successful')
     return redirect(url_for('index'))
 
-
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db.close()
-
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
