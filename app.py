@@ -40,7 +40,7 @@ def index():
     return render_template("login.html", form = user_login_form)
 
 
-@app.route("/register", methods=['GET', 'POST']) # Default route
+@app.route("/register", methods=['GET', 'POST'])
 def register():
 
     user_reg_form = RegistrationForm()
@@ -85,6 +85,10 @@ def logout():
     flash('Logout successful')
     return redirect(url_for('index'))
 
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.remove()
 
 @app.errorhandler(404)
 def page_not_found(e):

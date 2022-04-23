@@ -20,7 +20,7 @@ def valid_user_data(form, field):
 def validate_registration(form, field): 
 
     current_username = field.data
-
+    
     current_user = User.query.filter_by(username = current_username).first()
     if current_user:
         raise ValidationError("Username already exists")
