@@ -1,3 +1,4 @@
+import os
 from socket import socket
 from time import localtime, strftime
 from flask import Flask, render_template, redirect, url_for, flash
@@ -9,10 +10,10 @@ from models import *
 
 # Configurations
 app = Flask(__name__)
-app.secret_key = 'MUST REPLACE'  #REPLACE SECRET KEY
+app.secret_key = os.environ.get('SECRET')
 
 # Database setup (REQWRITE KEY FOR PUBLICATION)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://qfdtdkunaroicj:c3d36f692efe24709974488ec30f5158d0b22cdf18eb470e854867cc2094f3bd@ec2-52-21-136-176.compute-1.amazonaws.com:5432/dcfco3jf2ii5bc'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 socketio = SocketIO(app)
@@ -114,4 +115,4 @@ def leave(data):
 
 
 if __name__ == "__main__":
-    socketio.run(app, debug = True)
+    app.run()
