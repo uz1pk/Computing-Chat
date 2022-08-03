@@ -18,6 +18,8 @@ My main goal of this project was to get in depth familiarity with full stack web
 
 **Front-End:** HTML, CSS, Javascript (Vanilla)
 
-**Back-End:** Flask, SQL Alchemy
+**Back-End:** Flask, Jinja, SQL Alchemy
 
 **Database:** PostgreSQL
+
+**Server/Host:** Heroku
