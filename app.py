@@ -42,19 +42,6 @@ def index():
     return render_template("login.html", form = user_login_form)
 
 
-@app.route("/login", methods=['GET', 'POST'])
-def index():
-
-    user_login_form = UserLoginForm()
-    
-    if user_login_form.validate_on_submit():
-        cur_user = User.query.filter_by(username = user_login_form.username.data).first()
-        login_user(cur_user)
-        return redirect(url_for('chat'))
-
-    return render_template("login.html", form = user_login_form)
-
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
 
@@ -74,43 +61,6 @@ def register():
         return redirect(url_for('index'))
 
     return render_template("index.html", form = user_reg_form)
-
-@app.route("/create", methods=['GET', 'POST'])
-def register():
-
-    user_reg_form = RegistrationForm()
-    
-    if user_reg_form.validate_on_submit():
-        current_username = user_reg_form.username.data
-        current_password = user_reg_form.password.data
-
-        hash_password = pbkdf2_sha256.hash(current_password) # hash password before adding to DB
-        
-        cur_user = User(username = current_username, password = hash_password)
-        db.session.add(cur_user)
-        db.session.commit() # add the users data to the DB
-
-        flash('Registered Successfully')
-        return redirect(url_for('index'))
-
-    return render_template("index.html", form = user_reg_form)
-
-
-@app.route("/rooms", methods=['GET', 'POST'])
-def chat():
-
-    if not current_user.is_authenticated:
-        flash('Must be logged in before accessing chat')
-        return redirect(url_for('index'))
-
-    user_room_add = AddRoomForm()
-
-    if user_room_add.validate_on_submit():
-        new_room = user_room_add.roomname.data
-        if new_room.lower() not in CHATROOMS:
-            CHATROOMS.append(new_room)
-
-    return render_template('main.html', username=current_user.username, form = user_room_add, rooms=CHATROOMS)
 
 
 @app.route("/chat", methods=['GET', 'POST'])
@@ -185,6 +135,91 @@ def leave(data):
 
     leave_room(data['room'])
     send({'message': data['username'] + " has left the room"}, room=data['room'])
+
+@app.route("/create", methods=['GET', 'POST'])
+def register():
+
+    user_reg_form = RegistrationForm()
+    
+    if user_reg_form.validate_on_submit():
+        current_username = user_reg_form.username.data
+        current_password = user_reg_form.password.data
+
+        hash_password = pbkdf2_sha256.hash(current_password) # hash password before adding to DB
+        
+        cur_user = User(username = current_username, password = hash_password)
+        db.session.add(cur_user)
+        db.session.commit() # add the users data to the DB
+
+        flash('Registered Successfully')
+        return redirect(url_for('index'))
+
+    return render_template("index.html", form = user_reg_form)
+
+@app.route("/new", methods=['GET', 'POST'])
+def register():
+
+    user_reg_form = RegistrationForm()
+    
+    if user_reg_form.validate_on_submit():
+        current_username = user_reg_form.username.data
+        current_password = user_reg_form.password.data
+
+        hash_password = pbkdf2_sha256.hash(current_password) # hash password before adding to DB
+        
+        cur_user = User(username = current_username, password = hash_password)
+        db.session.add(cur_user)
+        db.session.commit() # add the users data to the DB
+
+        flash('Registered Successfully')
+        return redirect(url_for('index'))
+
+    return render_template("index.html", form = user_reg_form)
+
+@app.route("/join", methods=['GET', 'POST'])
+def chat():
+
+    if not current_user.is_authenticated:
+        flash('Must be logged in before accessing chat')
+        return redirect(url_for('index'))
+
+    user_room_add = AddRoomForm()
+
+    if user_room_add.validate_on_submit():
+        new_room = user_room_add.roomname.data
+        if new_room.lower() not in CHATROOMS:
+            CHATROOMS.append(new_room)
+
+    return render_template('main.html', username=current_user.username, form = user_room_add, rooms=CHATROOMS)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def index():
+
+    user_login_form = UserLoginForm()
+    
+    if user_login_form.validate_on_submit():
+        cur_user = User.query.filter_by(username = user_login_form.username.data).first()
+        login_user(cur_user)
+        return redirect(url_for('chat'))
+
+    return render_template("login.html", form = user_login_form)
+
+@app.route("/rooms", methods=['GET', 'POST'])
+def chat():
+
+    if not current_user.is_authenticated:
+        flash('Must be logged in before accessing chat')
+        return redirect(url_for('index'))
+
+    user_room_add = AddRoomForm()
+
+    if user_room_add.validate_on_submit():
+        new_room = user_room_add.roomname.data
+        if new_room.lower() not in CHATROOMS:
+            CHATROOMS.append(new_room)
+
+    return render_template('main.html', username=current_user.username, form = user_room_add, rooms=CHATROOMS)
 
 
 if __name__ == "__main__":
