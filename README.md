@@ -1,7 +1,9 @@
+Heroku no longer provides free deployment with PostgreSQL, so this is unfortunately down
+
 # Computing Chat
 This web application is powered by Flask to allow for easy and simple chatting among computer science students and enthusiasts. 
 
-**Computing Chat**: https://computing-chat.herokuapp.com/
+**Computing Chat**
 
 ## Motivation
 
